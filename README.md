@@ -4,11 +4,13 @@ This project emulates many end-users interacting with StockTrader
 via an external load balancer, such as an AWS Elastic LoadBalancer. It will:
 * create a new portfolio for a randomly generated user
 * Buy some shares (between 0-100) of a randomly selected stock
-* Buy some shares (between 0-100) of a second, randomly selected, stock
-* Sell a random number of shares of each stock
+* Sell a random number of shares of said stock
 * Delete the portfolio
 
 There is a random amount of "think time" between each activity and there are page-navigation steps, included, too.
+
+You can get creative and add additional buys/sell actions, more thinking time, additional actions, 
+emulate different types of behavior by changing what is included in the `scenario`.
 
 
 ## Prerequisites for Mac
