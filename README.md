@@ -21,6 +21,10 @@ sdk install scala
 sdk install sbt
 ```
 
+## Run the tool
+
 ```shell
+git clone https://github.com/rtclauss/loopr.git
+cd loopr
 sbt clean GatlingIt/test -DpublicBaseEndpoint=https://a872f86d8b0b74adc9a6fb3568be2118-cb3a347684a3ce53.elb.us-east-2.amazonaws.com:9443
 ```
