@@ -60,14 +60,20 @@ class RecordedSimulation extends Simulation {
 
   private val login = exec(
     http("Load Login Page")
-      .get("/trader/login").headers(headers_0))
+      .get("/trader/login")
+      .headers(headers_0)
+      .check(
+        substring("HTTP 500 Internal Server Error").notExists,
+        substring("Exception").notExists))
       .pause(2, 5)
       .exec(http("Login")
         .post("/trader/login")
         .headers(headers_1)
         .formParam("id", "stock")
         .formParam("password", "trader")
-        .formParam("submit", "Submit"))
+        .formParam("submit", "Submit")
+        .check(substring("HTTP 500 Internal Server Error").notExists,
+          substring("Exception").notExists))
       .pause(minThinkTime,maxThinkTime)
 
   private val createPortfolio = exec(
@@ -75,13 +81,15 @@ class RecordedSimulation extends Simulation {
       .post("/trader/summary")
       .headers(headers_1)
       .formParam("action", "create")
-      .formParam("submit", "Submit"))
+      .formParam("submit", "Submit")
+      .check(substring("HTTP 500 Internal Server Error").notExists, substring("Exception").notExists))
     .pause(minThinkTime,maxThinkTime).feed(portfolioDataFeeder)
     .exec(http("Create New Portfolio")
       .post("/trader/addPortfolio")
       .headers(headers_1)
       .formParam("owner", "#{owner}")
-      .formParam("submit", "Submit"))
+      .formParam("submit", "Submit")
+      .check(substring("HTTP 500 Internal Server Error").notExists, substring("Exception").notExists))
     .pause(minThinkTime,maxThinkTime)
 
   val viewSpecificPortfolio = exec(
@@ -90,30 +98,34 @@ class RecordedSimulation extends Simulation {
       .headers(headers_1)
       .formParam("action", "retrieve")
       .formParam("owner", "#{owner}")
-      .formParam("submit", "Submit"))
+      .formParam("submit", "Submit")
+      .check(substring("HTTP 500 Internal Server Error").notExists, substring("Exception").notExists))
     .pause(minThinkTime,maxThinkTime)
 //    .exec(http("Get Portfolio Data").get("/trader/viewPortfolio?owner=GatlingTest").headers(headers_1))
 //    .pause(5)
 
   val buyStockForPortfolio = exec(
-    http("Visit Buy/Sell Stock Page for Owner")
+    http("Visit Buy/Sell Stock Page for Owner to Buy")
       .post("/trader/viewPortfolio?owner=#{owner}")
       .headers(headers_1)
-      .formParam("submit", "Buy/Sell Stock"))
+      .formParam("submit", "Buy/Sell Stock")
+      .check(substring("HTTP 500 Internal Server Error").notExists, substring("Exception").notExists))
     .exec(http("Buy Shares of Stock 1")
       .post("/trader/addStock?owner=#{owner}&source=viewPortfolio")
       .headers(headers_1)
       .formParam("symbol", "#{stock1}")
       .formParam("shares", "#{amountToBuySell1}")
       .formParam("action", "Buy")
-      .formParam("submit", "Submit"))
+      .formParam("submit", "Submit")
+      .check(substring("HTTP 500 Internal Server Error").notExists, substring("Exception").notExists))
     .pause(minThinkTime,maxThinkTime)
 
   val sellStockFromPortfolio = exec(
-    http("Visit Buy/Sell Stock Page for Owner")
+    http("Visit Buy/Sell Stock Page for Owner to Sell")
       .post("/trader/viewPortfolio?owner=#{owner}")
       .headers(headers_1)
-      .formParam("submit", "Buy/Sell Stock"))
+      .formParam("submit", "Buy/Sell Stock")
+      .check(substring("HTTP 500 Internal Server Error").notExists, substring("Exception").notExists))
     .pause(minThinkTime,maxThinkTime)
     .exec(
       http("Sell Shares of Stock1")
@@ -122,7 +134,8 @@ class RecordedSimulation extends Simulation {
         .formParam("symbol", "#{stock1}")
         .formParam("shares", "#{amountToBuySell1}")
         .formParam("action", "Sell")
-        .formParam("submit", "Submit"))
+        .formParam("submit", "Submit")
+        .check(substring("HTTP 500 Internal Server Error").notExists, substring("Exception").notExists))
     .pause(minThinkTime,maxThinkTime)
 
   val deletePortfolio = exec(
@@ -130,6 +143,7 @@ class RecordedSimulation extends Simulation {
       .post("/trader/viewPortfolio?owner=#{owner}")
       .headers(headers_1)
       .formParam("submit", "OK")
+      .check(substring("HTTP 500 Internal Server Error").notExists, substring("Exception").notExists)
   ).pause(minThinkTime,maxThinkTime)
     .exec(
       http("Delete Generated Portfolio")
@@ -138,12 +152,13 @@ class RecordedSimulation extends Simulation {
         .formParam("action", "delete")
         .formParam("owner", "#{owner}")
         .formParam("submit", "Submit")
+        .check(substring("HTTP 500 Internal Server Error").notExists, substring("Exception").notExists)
     ).pause(minThinkTime,maxThinkTime)
 
   private val auditScenario = scenario("Auditor")
     .exec(login)
 
-  private val createAndExecute4Trades = scenario("Create Portfolio, Execute 1 Buys and 1 Sells, Deleting Portfolio at the end")
+  private val createAndExecuteOneTradeOneSell = scenario("Create Portfolio, Execute 1 Buys and 1 Sells, Deleting Portfolio at the end")
     .exec(login,createPortfolio,buyStockForPortfolio,sellStockFromPortfolio,deletePortfolio)
 
   //setUp(auditScenario.inject(rampUsers(100).during(15))).protocols(httpProtocol)
@@ -155,7 +170,19 @@ class RecordedSimulation extends Simulation {
 //    createAndExecute4Trades.inject(rampUsers(100).during(30)).protocols(httpProtocol))
 
   setUp(
-    createAndExecute4Trades.inject(rampUsersPerSec(1).to(10).during(15.minutes).randomized).protocols(httpProtocol))
+    // Open Model of testing
+//     createAndExecuteOneTradeOneSell.inject(rampUsersPerSec(1).to(10).during(5.minutes).randomized).protocols(httpProtocol))
+
+    // Closed Model of testing
+    createAndExecuteOneTradeOneSell.inject(
+      rampConcurrentUsers(1)
+        .to(100)
+        .during(30.minutes)
+      ,
+      constantConcurrentUsers(100)
+        .during(12.hours)
+    ).protocols(httpProtocol))
+  //createAndExecute4Trades.inject(atOnceUsers(1)).protocols(httpProtocol))
 
 
 
