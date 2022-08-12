@@ -177,10 +177,12 @@ class RecordedSimulation extends Simulation {
     createAndExecuteOneTradeOneSell.inject(
       rampConcurrentUsers(1)
         .to(100)
-        .during(30.minutes)
+        .during(5.minutes)
+        //.during(30.minutes)
       ,
       constantConcurrentUsers(100)
-        .during(12.hours)
+        //.during(10.minutes)
+        .during(4.hours)
     ).protocols(httpProtocol))
   //createAndExecute4Trades.inject(atOnceUsers(1)).protocols(httpProtocol))
 
