@@ -5,13 +5,19 @@ import scala.util.Random
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 
+import scala.io.Source
 import scala.language.postfixOps
 
 class RecordedSimulation extends Simulation {
 
   // You can add or remove stocks you want to trade.
-  val stocksToUse = Seq("KD", "AAPL", "AMZN", "T", "IBM", "MSFT")
-
+  var stocksToUse = Seq[String]()
+  val source  = Source.fromFile("stocks.txt")
+  for(line <- source.getLines()) {
+    stocksToUse = stocksToUse :+ line
+  }
+  source.close()
+  System.out.println("Stock list is of size: " + stocksToUse.size)
   val maxThinkTime = 30 // seconds
   val minThinkTime = 5 // seconds
 
@@ -25,9 +31,9 @@ class RecordedSimulation extends Simulation {
   private val portfolioDataFeeder = Iterator.continually{
     Map("owner" -> s"${Random.alphanumeric.take(20).mkString}",  // Randomly generated owner string
       "stock1"-> s"${stocksToUse(Random.nextInt(stocksToUse.length)).mkString}",  // Randomly pick a stock
-      "amountToBuySell1" -> Random.nextInt(10),
+      "amountToBuySell1" -> (Random.nextInt(10)+1),
       "stock2"-> s"${stocksToUse(Random.nextInt(stocksToUse.length)).mkString}",  // Randomly pick a second stock
-      "amountToBuySell2" -> Random.nextInt(10))
+      "amountToBuySell2" -> (Random.nextInt(10)+1))
   }
 
   private val httpProtocol = http
