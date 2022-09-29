@@ -182,11 +182,11 @@ class RecordedSimulation extends Simulation {
     // Closed Model of testing
     createAndExecuteOneTradeOneSell.inject(
       rampConcurrentUsers(1)
-        .to(200)
+        .to(400)
         .during(5.minutes)
         //.during(30.minutes)
       ,
-      constantConcurrentUsers(200)
+      constantConcurrentUsers(400)
         //.during(10.minutes)
         .during(4.hours)
     ).protocols(httpProtocol))
