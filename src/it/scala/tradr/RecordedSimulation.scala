@@ -14,7 +14,9 @@ class RecordedSimulation extends Simulation {
   var stocksToUse = Seq[String]()
   val source  = Source.fromFile("stocks.txt")
   for(line <- source.getLines()) {
-    stocksToUse = stocksToUse :+ line
+    if (!line.startsWith("#")) {
+      stocksToUse = stocksToUse :+ line
+    }
   }
   source.close()
   System.out.println("Stock list is of size: " + stocksToUse.size)
