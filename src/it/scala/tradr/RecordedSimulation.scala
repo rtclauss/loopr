@@ -21,7 +21,6 @@ class RecordedSimulation extends Simulation {
   source.close()
   System.out.println("Stock list is of size: " + stocksToUse.size)
   System.out.println(stocksToUse)
-  System.exit(0)
   val maxThinkTime = 30 // seconds
   val minThinkTime = 5 // seconds
 
