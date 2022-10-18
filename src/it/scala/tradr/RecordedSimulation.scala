@@ -14,12 +14,14 @@ class RecordedSimulation extends Simulation {
   var stocksToUse = Seq[String]()
   val source  = Source.fromFile("stocks.txt")
   for(line <- source.getLines()) {
-    if (!line.startsWith("#") || !line.isBlank) {
+    if (!line.startsWith("#") && !line.isBlank) {
       stocksToUse = stocksToUse :+ line
     }
   }
   source.close()
   System.out.println("Stock list is of size: " + stocksToUse.size)
+  System.out.println(stocksToUse)
+  System.exit(0)
   val maxThinkTime = 30 // seconds
   val minThinkTime = 5 // seconds
 
