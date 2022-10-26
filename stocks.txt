@@ -13,7 +13,7 @@ ADBE
 ADI
 ADM
 ADP
-ADS
+ADDYY
 ADSK
 AEE
 AEP
@@ -67,7 +67,7 @@ BBY
 BDX
 BEN
 BF.B
-BHGE
+# BHGE <- Delisted
 BIIB
 BK
 BKNG
@@ -220,7 +220,7 @@ HCA
 HCP
 HD
 HES
-HFC
+# HFC <- Delisted
 HIG
 HII
 HLT
@@ -258,7 +258,7 @@ ITW
 IVZ
 JBHT
 JCI
-JEC
+# JEC <-- Delisted
 JEF
 JKHY
 JNJ
@@ -426,7 +426,7 @@ SWK
 SWKS
 SYF
 SYK
-SYMC
+# SYMC <- Delisted
 SYY
 T
 TAP
@@ -482,7 +482,7 @@ WEC
 WELL
 WFC
 WHR
-WLTW
+# WLTW <- Delisted
 WM
 WMB
 WMT
