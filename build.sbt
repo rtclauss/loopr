@@ -1,14 +1,16 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
-ThisBuild / scalaVersion := "2.13.8"
+ThisBuild / scalaVersion := "2.13.10"
 
 enablePlugins(GatlingPlugin)
 
 val ScalaCheckVersion = "1.14.1"
+val gatlingVersion = "3.9.3"
+
 libraryDependencies ++= Seq(
   "org.scalacheck" %% "scalacheck" % ScalaCheckVersion,
-  "io.gatling.highcharts" % "gatling-charts-highcharts" % "3.8.2" % "it, test",
-  "io.gatling"            % "gatling-test-framework"    % "3.8.2" % "it, test"
+  "io.gatling.highcharts" % "gatling-charts-highcharts" % gatlingVersion % "it, test",
+  "io.gatling"            % "gatling-test-framework"    % gatlingVersion % "it, test"
 
 )
 
