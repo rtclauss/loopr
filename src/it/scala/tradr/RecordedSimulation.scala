@@ -107,6 +107,8 @@ class RecordedSimulation extends Simulation {
       .headers(headers_1)
       .formParam("action", "retrieve")
       .formParam("owner", "#{owner}")
+      .formParam("balance", "10000.00")
+      .formParam("currency", "USD")
       .formParam("submit", "Submit")
       .check(substring("HTTP 500 Internal Server Error").notExists, substring("Exception").notExists))
     .pause(minThinkTime,maxThinkTime)
