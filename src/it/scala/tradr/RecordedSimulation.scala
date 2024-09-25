@@ -32,7 +32,7 @@ class RecordedSimulation extends Simulation {
   }
 
   private val portfolioDataFeeder = Iterator.continually{
-    Map("owner" -> s"${Random.alphanumeric.take(20).mkString}",  // Randomly generated owner string
+    Map("owner" -> s"gatling-${Random.alphanumeric.take(20).mkString}",  // Randomly generated owner string
       "stock1"-> s"${stocksToUse(Random.nextInt(stocksToUse.length)).mkString}",  // Randomly pick a stock
       "amountToBuySell1" -> (Random.nextInt(10)+1),
       "stock2"-> s"${stocksToUse(Random.nextInt(stocksToUse.length)).mkString}",  // Randomly pick a second stock
@@ -97,6 +97,8 @@ class RecordedSimulation extends Simulation {
       .post("/trader/addPortfolio")
       .headers(headers_1)
       .formParam("owner", "#{owner}")
+      .formParam("balance", "10000.00")
+      .formParam("currency", "USD")
       .formParam("submit", "Submit")
       .check(substring("HTTP 500 Internal Server Error").notExists, substring("Exception").notExists))
     .pause(minThinkTime,maxThinkTime)
@@ -107,8 +109,6 @@ class RecordedSimulation extends Simulation {
       .headers(headers_1)
       .formParam("action", "retrieve")
       .formParam("owner", "#{owner}")
-      .formParam("balance", "10000.00")
-      .formParam("currency", "USD")
       .formParam("submit", "Submit")
       .check(substring("HTTP 500 Internal Server Error").notExists, substring("Exception").notExists))
     .pause(minThinkTime,maxThinkTime)
